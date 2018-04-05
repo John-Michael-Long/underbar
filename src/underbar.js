@@ -7,6 +7,7 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -110,12 +111,30 @@
   _.uniq = function(array, isSorted, iterator) {
     
     var uniqArray = [];
+    var mapArray = [];
+    var uniqMapArray = [];
 
-    _.each(array, function(element, index, array){
-      if(uniqArray.indexOf(element) === -1){
-        uniqArray.push(element);
-      }
-    })
+    if(isSorted !== undefined){
+
+      _.each(array, function(element, index, array){
+        mapArray.push(isSorted(element));
+      })
+
+      _.each(mapArray, function(element, index, mapArray){
+
+        if(uniqMapArray.indexOf(element) === -1){
+          uniqMapArray.push(mapArray[index]);
+          uniqArray.push(array[index]);
+        }
+      })
+    }else{
+      _.each(array, function(element, index, array){
+
+        if(uniqArray.indexOf(element) === -1){
+          uniqArray.push(element)
+        }
+      })
+    }
     return uniqArray;
   };
 
@@ -125,6 +144,12 @@
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    var resultsArray = [];
+
+    for(var i = 0; i < collection.length; i++){
+      resultsArray.push(iterator(collection[i]));
+    }
+    return resultsArray;
   };
 
   /*
@@ -166,6 +191,20 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    var acc;
+    if(accumulator !== undefined){
+      acc = accumulator;
+    }else{
+      acc = collection[0]
+    }
+
+    _.each(collection, function(element, index){
+
+      if(accumulator !== undefined || index !== 0){
+        acc = iterator(acc, element)
+      }
+    })
+    return acc;
   };
 
   // Determine if the array or object contains a given value (using `===`).
