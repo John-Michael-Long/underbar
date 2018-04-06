@@ -146,9 +146,13 @@
     // the members, it also maintains an array of results.
     var resultsArray = [];
 
-    for(var i = 0; i < collection.length; i++){
-      resultsArray.push(iterator(collection[i]));
-    }
+    // for(var i = 0; i < collection.length; i++){
+    //   resultsArray.push(iterator(collection[i]));
+    // }
+    _.each(collection, function(element, index){
+      resultsArray.push(iterator(collection[index]));
+    })
+
     return resultsArray;
   };
 
@@ -223,6 +227,15 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    return _.reduce(collection, function(acc, element){
+      if (iterator === undefined){
+        return acc && _.identity(element);
+      }else if (iterator(element)){
+        return acc && true;
+      }
+      return acc && false;
+      },true);
+
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
