@@ -227,6 +227,9 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    //var startingVal = arguments[2] === undefined ? true : 
+
+
     return _.reduce(collection, function(acc, element){
       if (iterator === undefined){
         return acc && _.identity(element);
@@ -242,6 +245,21 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+
+        // pass in a 3rd value to every???
+
+    if(collection == ""){
+      return false;
+    }
+   return _.reduce(collection, function(acc, element){
+    if(iterator === undefined){
+      return acc || _.identity(element)
+    }else if (iterator(element)){
+      return acc || true;
+    }
+    return acc || false;
+   }, false);
+    
   };
 
 
@@ -263,15 +281,44 @@
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj) {
+  _.extend = function(obj) {  
+    //store main object
+    //add other objects to main
+    //  cycle though each obj in arguments array
+    //  cycle though each key in each obj and add to main obj
+
+    var mainObj = arguments[0];
+
+    _.each(arguments,function(element, index){
+      var newObj = element;
+
+      if(index !== 0){
+        for(var key in newObj){
+          mainObj[key] = newObj[key];
+        }
+      }
+    })
+    return mainObj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var mainObj = arguments[0];
+
+    _.each(arguments,function(element, index){
+      var newObj = element;
+
+      if(index !== 0){
+        for(var key in newObj){
+          if(mainObj[key] === undefined){
+            mainObj[key] = newObj[key];
+          }
+        }
+      }
+    })
+    return mainObj;
   };
-
-
   /**
    * FUNCTIONS
    * =========
@@ -279,20 +326,21 @@
    * Now we're getting into function decorators, which take in any function
    * and return out a new version of the function that works somewhat differently
    */
-
   // Return a function that can be called at most one time. Subsequent calls
   // should return the previously returned value.
+
+
   _.once = function(func) {
     // TIP: These variables are stored in a "closure scope" (worth researching),
     // so that they'll remain available to the newly-generated function every
     // time it's called.
     var alreadyCalled = false;
     var result;
-
     // TIP: We'll return a new function that delegates to the old one, but only
     // if it hasn't been called before.
     return function() {
       if (!alreadyCalled) {
+
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
         // infromation from one function call to another.
         result = func.apply(this, arguments);
@@ -312,6 +360,15 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var resultObj = {};
+
+    return function(){
+      var argStrings = JSON.stringify(arguments);
+      if (!(argStrings in resultObj)){
+        resultObj[argStrings] = func.apply(this, arguments)
+      }
+      return resultObj[argStrings];
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -321,6 +378,16 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    //assign remaining args to array using for-loop
+    //use func.apply(thisValue,[parameter array])
+    var argsArray = [];
+    for(var i = 2; i < arguments.length; i++){
+      argsArray.push(arguments[i])
+    }
+    window.setTimeout(function(){
+      return func.apply(null, argsArray);
+    }, wait)
+    
   };
 
 
@@ -335,6 +402,21 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var copyArray = array.slice();
+    //loop through array backwards
+    //  using random()* index will generate number from 0 to index
+    //  swap current element with random generator index
+    //
+    var randoIndex;
+    var temp;
+
+    for(var i = array.length - 1; i >= 0; i--){
+      randoIndex = Math.floor(Math.random()*i);
+      temp = copyArray[i];  
+      copyArray[i] = copyArray[randoIndex];
+      copyArray[randoIndex] = temp;
+    }
+    return copyArray;
   };
 
 
