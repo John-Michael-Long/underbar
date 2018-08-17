@@ -8,9 +8,6 @@
     return val;
   };
 
-  
-  // COLLECTIONS - something that can contain a number of values--either an array or an object.
-
   // Return an array of the first n elements of an array. 
   // If n is undefined, return just the first element.
   _.first = function(array, n) {
@@ -35,7 +32,6 @@
 
   // Call iterator(value, key, collection) for each element of collection.
   // Accepts both arrays and objects.
-
   _.each = function(collection, iterator) {
 
     if (Array.isArray(collection)) {
@@ -154,7 +150,7 @@
         acc = iterator(acc, value);        
       }
 
-    })
+    });
 
     return acc;
   };
@@ -173,7 +169,7 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+    
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
